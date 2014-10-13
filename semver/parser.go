@@ -44,7 +44,7 @@ func Parse(raw string) (Comparison, error) {
     }
 
     // do we have a semantically-correct version number too?
-    version, err := parseVersion(raw, offset)
+    version, err := parseVersionWithOffset(raw, offset)
     if err != nil {
         return Comparison{}, err
     }
@@ -65,10 +65,10 @@ func startsWithOperator(raw string) (int, int, error) {
 }
 
 func ParseVersion(raw string) (SemVersion, error) {
-    return parseVersion(raw, 0)
+    return parseVersionWithOffset(raw, 0)
 }
 
-func parseVersion(raw string, offset int) (SemVersion, error) {
+func parseVersionWithOffset(raw string, offset int) (SemVersion, error) {
     for _, re := range versionRegexes {
         matches := re.FindStringSubmatch(raw)
         if len(matches) == 0 {
