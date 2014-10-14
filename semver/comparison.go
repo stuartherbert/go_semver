@@ -28,8 +28,8 @@ var (
     ErrNewerStableVersion       = fmt.Errorf("Newer stable version")
 )
 
-// check to see if 'version' matches the expression that we have already
-// parsed.
+// Matches checks to see if 'version' matches the expression that we have
+// already parsed.
 //
 // this is a convenience method around 'MatchesVersion', to avoid parsing
 // the 'version' string yourself first
@@ -47,8 +47,8 @@ func (lhs *VersionExpression) Matches(version string) (bool, error) {
     return lhs.MatchesVersion(&rhs)
 }
 
-// check to see if 'version' matches the expression that we have already
-// parsed.
+// MatchesVersion checks to see if 'version' matches the expression that
+// we have already parsed.
 //
 // returns 'true' if the version matches the expression in 'lhs'
 // returns 'false' plus one of the Err* values if the version does not

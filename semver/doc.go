@@ -1,7 +1,6 @@
-// Copyright (c) 2014-present Stuart Herbert
-// All rights reserved
+// Version string parsing and comparison library
 //
-// Released under the 3-clause BSD license
+// Versions
 //
 // The semver package allows you to parse software version strings of
 // the form:
@@ -29,6 +28,8 @@
 //     1.0
 //     1.0.0
 //     1.1.0-SNAPSHOT-20141013
+//
+// Comparisons
 //
 // The semver package also includes support for comparing two version
 // strings against each other, using the following operators:

@@ -62,7 +62,10 @@ func init() {
     }
 }
 
-// takes an expression of the form:
+// ParseExpression converts a version expression string into a
+// VersionExpression struct.
+//
+// Takes an expression of the form:
 //
 //     <OPERATOR><version-string>
 //
@@ -95,7 +98,10 @@ func startsWithOperator(raw string) (int, int, error) {
     return -1, -1, fmt.Errorf("unrecognised operator")
 }
 
-// takes any of these strings:
+// ParseVersion takes a version string and turns it into a SemVersion
+// struct.
+//
+// Takes any of these strings:
 //
 //     X.Y
 //     X.Y.Z
