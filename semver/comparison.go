@@ -26,6 +26,7 @@ var (
     ErrStableVersion            = fmt.Errorf("unexpected stable version received")
     ErrOlderUnstableVersion     = fmt.Errorf("older unstable version")
     ErrNewerStableVersion       = fmt.Errorf("newer stable version")
+    ErrSameVersion              = fmt.Errorf("same version number")
 )
 
 // Matches checks to see if 'version' matches the expression that we have
@@ -66,6 +67,9 @@ func (lhs *VersionExpression) MatchesVersion(rhs *SemVersion) (bool, error) {
 
     case OP_TILDE:
         return lhs.matchesCompatibleWith(rhs)
+
+    case OP_NOT_EQUALS:
+        return lhs.matchesAnythingBut(rhs)
     }
 
     // if we get here, then we do not recognise the operator
@@ -309,4 +313,28 @@ func (lhs *VersionExpression) matchesCompatibleWithUnstable(rhs *SemVersion) (bo
     }
 
     return true, nil
+}
+
+func (lhs *VersionExpression) matchesAnythingBut(rhs *SemVersion) (bool, error) {
+    if lhs.Version.Stability != rhs.Stability {
+        return true, nil
+    }
+
+    if lhs.Version.Major != rhs.Major {
+        return true, nil
+    }
+
+    if lhs.Version.Minor != rhs.Minor {
+        return true, nil
+    }
+
+    if lhs.Version.PatchLevel != rhs.PatchLevel {
+        return true, nil
+    }
+
+    if lhs.Version.Release != rhs.Release {
+        return true, nil
+    }
+
+    return false, ErrSameVersion
 }

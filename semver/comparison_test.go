@@ -127,7 +127,7 @@ func TestCanMatchUsingGreaterThanOrEquals(t *testing.T) {
     // LHS contains the operator
     // RHS contains only a version number to compare against
     //
-    // all of these pairs should be considered equivalent
+    // all of these pairs should match
     var toMatch = [][2]string{
         // this first set is the same that we use in the 'equals' operator
         // test above ... they're all expected to pass too
@@ -188,7 +188,7 @@ func TestCannotMatchUsingGreaterThanOrEquals(t *testing.T) {
     // LHS contains the operator
     // RHS contains only a version number to compare against
     //
-    // all of these pairs should be considered non-equivalent
+    // all of these pairs should not match
     var toMatch = []ExpectedError{
         ExpectedError{">=1.3", "0.3", ErrMajorVersionTooSmall},
         ExpectedError{">=1.3", "1.2", ErrMinorVersionTooSmall},
@@ -246,7 +246,7 @@ func TestCanMatchUsingLessThanOrEquals(t *testing.T) {
     // LHS contains the operator
     // RHS contains only a version number to compare against
     //
-    // all of these pairs should be considered equivalent
+    // all of these pairs should match
     var toMatch = [][2]string{
         // this first set is the same that we use in the 'equals' operator
         // test above ... they're all expected to pass too
@@ -306,7 +306,7 @@ func TestCannotMatchUsingLessThanOrEquals(t *testing.T) {
     // LHS contains the operator
     // RHS contains only a version number to compare against
     //
-    // all of these pairs should be considered non-equivalent
+    // all of these pairs should not match
     var toMatch = []ExpectedError{
         ExpectedError{"<=1.3", "2.0", ErrMajorVersionTooLarge},
         ExpectedError{"<=1.3", "1.4", ErrMinorVersionTooLarge},
@@ -364,7 +364,7 @@ func TestCanMatchUsingTilde(t *testing.T) {
     // LHS contains the operator
     // RHS contains only a version number to compare against
     //
-    // all of these pairs should be considered equivalent
+    // all of these pairs should match
     var toMatch = [][2]string{
         // this first set is the same that we use in the 'equals' operator
         // test above ... they're all expected to pass too
@@ -420,7 +420,7 @@ func TestCannotMatchUsingTilde(t *testing.T) {
     // LHS contains the operator
     // RHS contains only a version number to compare against
     //
-    // all of these pairs should be considered non-equivalent
+    // all of these pairs should not match
     var toMatch = []ExpectedError{
         ExpectedError{"~1.3", "2.0", ErrDifferentMajorVersions},
         ExpectedError{"~1.3", "1.2", ErrMinorVersionTooSmall},
@@ -437,6 +437,101 @@ func TestCannotMatchUsingTilde(t *testing.T) {
         ExpectedError{"~2.5.99-ALPHA-1", "2.5.99-BETA-2", ErrDifferentStabilityLevels},
         ExpectedError{"~2.5.99-RC-1", "2.5.99", ErrDifferentStabilityLevels},
         ExpectedError{"~2.5.99-SNAPSHOT-20141013", "2.5.99-SNAPSHOT-20141012", ErrReleaseNumberTooSmall},
+    }
+
+    for _, matchSet := range toMatch {
+        // perform the test
+        lhs, err := ParseExpression(matchSet.lhs)
+        if err != nil {
+            t.Error(err)
+            return
+        }
+        actual, err := lhs.Matches(matchSet.rhs)
+
+        // was an error returned?
+        if err != matchSet.err {
+            fmt.Println(matchSet.lhs)
+            fmt.Println(matchSet.rhs)
+            t.Error(err)
+            return
+        }
+
+        // did we get back what we expected?
+        if actual != false {
+            t.Errorf("Expected %d, received %d", false, actual)
+            return
+        }
+    }
+}
+
+// ========================================================================
+//
+// Compare two versions using the not equals operator
+//
+// ------------------------------------------------------------------------
+
+func TestCanMatchUsingNotEquals(t *testing.T) {
+    // what result do we expect?
+    expected := true
+
+    // our list of strings to match
+    //
+    // LHS contains the operator
+    // RHS contains only a version number to compare against
+    //
+    // all of these pairs should match
+    var toMatch = [][2]string{
+        [2]string{"!=1.3", "1.4"},
+        [2]string{"!=1.3", "1.4.0"},
+        [2]string{"!=1.3.0", "1.2.0"},
+        [2]string{"!=1.3.1", "1.3.0"},
+        [2]string{"!=1.3.1", "1.33.1"},
+        [2]string{"!=2.6-alpha-1", "2.6-alpha-2"},
+        [2]string{"!=2.6-alpha-1", "2.6.0-alpha-2"},
+        [2]string{"!=2.6-alpha-1", "2.6.0"},
+        [2]string{"!=2.6.0", "2.6-alpha-1"},
+        [2]string{"!=2.6.0", "2.6.0-alpha-1"},
+    }
+
+    for _, matchSet := range toMatch {
+        // perform the test
+        lhs, err := ParseExpression(matchSet[0])
+        if err != nil {
+            t.Error(err)
+            return
+        }
+        actual, err := lhs.Matches(matchSet[1])
+
+        // was an error returned?
+        if err != nil {
+            fmt.Println(lhs)
+            fmt.Println(matchSet[1])
+            t.Error(err)
+            return
+        }
+
+        // did we get back what we expected?
+        if actual != expected {
+            t.Errorf("Expected %d, received %d", expected, actual)
+            return
+        }
+    }
+}
+
+func TestCannotMatchUsingNotEquals(t *testing.T) {
+    // our list of strings to compare
+    //
+    // LHS contains the operator
+    // RHS contains only a version number to compare against
+    //
+    // all of these pairs should not match
+    var toMatch = []ExpectedError{
+        ExpectedError{"!=1.3", "1.3", ErrSameVersion},
+        ExpectedError{"!=1.3", "1.3.0", ErrSameVersion},
+        ExpectedError{"!=1.3.0", "1.3", ErrSameVersion},
+        ExpectedError{"!=1.3.1", "1.3.1", ErrSameVersion},
+        ExpectedError{"!=2.6-alpha-2", "2.6-alpha-2", ErrSameVersion},
+        ExpectedError{"!=2.6-alpha-2", "2.6.0-alpha-2", ErrSameVersion},
     }
 
     for _, matchSet := range toMatch {
