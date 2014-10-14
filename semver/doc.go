@@ -1,4 +1,4 @@
-// Version string parsing and comparison library
+// Package semver is a version string parsing and comparison library
 //
 // Versions
 //

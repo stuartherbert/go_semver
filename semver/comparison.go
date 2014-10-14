@@ -7,25 +7,25 @@ import (
 
 // errors returned when a version does not match an expression
 var (
-    ErrDifferentMajorVersions   = fmt.Errorf("Major version numbers are different")
-    ErrDifferentMinorVersions   = fmt.Errorf("Minor version numbers are different")
-    ErrDifferentPatchLevel      = fmt.Errorf("Patchlevels are different")
-    ErrDifferentStabilityLevels = fmt.Errorf("Stability levels are different")
-    ErrDifferentReleaseNumbers  = fmt.Errorf("Release numbers are different")
+    ErrDifferentMajorVersions   = fmt.Errorf("major version numbers are different")
+    ErrDifferentMinorVersions   = fmt.Errorf("minor version numbers are different")
+    ErrDifferentPatchLevel      = fmt.Errorf("patchlevels are different")
+    ErrDifferentStabilityLevels = fmt.Errorf("stability levels are different")
+    ErrDifferentReleaseNumbers  = fmt.Errorf("release numbers are different")
     ErrIncomparable             = fmt.Errorf("LHS and RHS are incomparable")
-    ErrUnknownOperator          = fmt.Errorf("Unknown operator; cannot compare")
-    ErrMajorVersionTooSmall     = fmt.Errorf("Major version number is too small")
-    ErrMinorVersionTooSmall     = fmt.Errorf("Minor version number is too small")
-    ErrPatchLevelTooSmall       = fmt.Errorf("Patchlevel is too small")
-    ErrReleaseNumberTooSmall    = fmt.Errorf("Release number is too small")
-    ErrMajorVersionTooLarge     = fmt.Errorf("Major version number is too large")
-    ErrMinorVersionTooLarge     = fmt.Errorf("Minor version number is too large")
-    ErrPatchLevelTooLarge       = fmt.Errorf("Patchlevel is too large")
-    ErrReleaseNumberTooLarge    = fmt.Errorf("Release number is too large")
-    ErrUnstableVersion          = fmt.Errorf("Unexpected unstable version received")
-    ErrStableVersion            = fmt.Errorf("Unexpected stable version received")
-    ErrOlderUnstableVersion     = fmt.Errorf("Older unstable version")
-    ErrNewerStableVersion       = fmt.Errorf("Newer stable version")
+    ErrUnknownOperator          = fmt.Errorf("unknown operator; cannot compare")
+    ErrMajorVersionTooSmall     = fmt.Errorf("major version number is too small")
+    ErrMinorVersionTooSmall     = fmt.Errorf("minor version number is too small")
+    ErrPatchLevelTooSmall       = fmt.Errorf("patchlevel is too small")
+    ErrReleaseNumberTooSmall    = fmt.Errorf("release number is too small")
+    ErrMajorVersionTooLarge     = fmt.Errorf("major version number is too large")
+    ErrMinorVersionTooLarge     = fmt.Errorf("minor version number is too large")
+    ErrPatchLevelTooLarge       = fmt.Errorf("patchlevel is too large")
+    ErrReleaseNumberTooLarge    = fmt.Errorf("release number is too large")
+    ErrUnstableVersion          = fmt.Errorf("unexpected unstable version received")
+    ErrStableVersion            = fmt.Errorf("unexpected stable version received")
+    ErrOlderUnstableVersion     = fmt.Errorf("older unstable version")
+    ErrNewerStableVersion       = fmt.Errorf("newer stable version")
 )
 
 // Matches checks to see if 'version' matches the expression that we have
@@ -101,9 +101,10 @@ func (lhs *VersionExpression) matchesGreaterThanOrEqualTo(rhs *SemVersion) (bool
     // are we checking a stable or an unstable release?
     if lhs.Version.Stability == "" {
         return lhs.matchesGreaterThanOrEqualToStable(rhs)
-    } else {
-        return lhs.matchesGreaterThanOrEqualToUnstable(rhs)
     }
+
+    // we are checking an unstable release
+    return lhs.matchesGreaterThanOrEqualToUnstable(rhs)
 }
 
 func (lhs *VersionExpression) matchesGreaterThanOrEqualToStable(rhs *SemVersion) (bool, error) {
@@ -176,9 +177,10 @@ func (lhs *VersionExpression) matchesLessThanOrEqualTo(rhs *SemVersion) (bool, e
     // are we checking a stable or an unstable release?
     if lhs.Version.Stability == "" {
         return lhs.matchesLessThanOrEqualToStable(rhs)
-    } else {
-        return lhs.matchesLessThanOrEqualToUnstable(rhs)
     }
+
+    // we are checking an unstable release
+    return lhs.matchesLessThanOrEqualToUnstable(rhs)
 }
 
 func (lhs *VersionExpression) matchesLessThanOrEqualToStable(rhs *SemVersion) (bool, error) {
@@ -250,9 +252,10 @@ func (lhs *VersionExpression) matchesLessThanOrEqualToUnstable(rhs *SemVersion) 
 func (lhs *VersionExpression) matchesCompatibleWith(rhs *SemVersion) (bool, error) {
     if lhs.Version.Stability == "" {
         return lhs.matchesCompatibleWithStable(rhs)
-    } else {
-        return lhs.matchesCompatibleWithUnstable(rhs)
     }
+
+    // we are checking an unstable release
+    return lhs.matchesCompatibleWithUnstable(rhs)
 }
 
 func (lhs *VersionExpression) matchesCompatibleWithStable(rhs *SemVersion) (bool, error) {

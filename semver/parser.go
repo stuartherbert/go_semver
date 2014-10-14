@@ -7,7 +7,7 @@ import (
     "strings"
 )
 
-// holds the result of a parsed version expression
+// VersionExpression holds the result of a parsed version expression
 //
 // create one by calling:
 //
