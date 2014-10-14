@@ -7,7 +7,7 @@ import (
     "strings"
 )
 
-// holds the result of a parsed version expression
+// VersionExpression holds the result of a parsed version expression
 //
 // create one by calling:
 //
@@ -40,8 +40,12 @@ const OP_TILDE = 3
 // currently unsupported
 const OP_AT = 4
 
+// value of VersionExpression.Operator when the expression requires
+// a version that does NOT equal
+const OP_NOT_EQUALS = 5
+
 // a list of supported operators
-var opList = []string{"=", ">=", "<=", "~", "@"}
+var opList = []string{"=", ">=", "<=", "~", "@", "!="}
 
 // holds our compiled regexes, so that we don't have to compile them
 // more than once

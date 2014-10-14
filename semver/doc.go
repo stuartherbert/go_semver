@@ -1,4 +1,4 @@
-// Version string parsing and comparison library
+// Package semver is a version string parsing and comparison library
 //
 // Versions
 //
@@ -39,6 +39,7 @@
 //     <= : any version that's less than or equal to
 //     ~  : any version that's greater than or equal to, and has the same
 //          major version number
+//     != : any version that is different in any way
 //
 // For example:
 //
@@ -66,12 +67,22 @@
 //     ~1.3.0-alpha-1 : matches '1.3-alpha-1', '1.3.0-alpha-1' and all
 //                      newer alpha releases of 1.3.0
 //
+//     !=1.3 : matches anything except '1.3' and '1.3.0'
+//     !=1.3.0 : matches anything except '1.3' and '1.3.0'
+//     !=1.3-alpha-1 : matches anything except '1.3-alpha-1' or
+//                    '1.3.0-alpha-1'
+//     !=1.3.0-alpha-1 : matches anything except '1.3-alpha-1' or
+//                       '1.3.0-alpha-1'
+//
 // You can only compare like releases with like:
 //
 //     stable releases can only be compared with other stable releases
 //
 //     any unstable release can only be compared with another release with
 //     the same stability level AND same X.Y.Z
+//
+// The exception to that rule is the != operator, which only returns an
+// error if both versions are equivalent
 //
 // The semver API returns meaningful errors when a comparison fails,
 // explaining exactly why two version strings are different or can't be

@@ -92,11 +92,14 @@ func (lhs *SemVersion) Compare(rhs *SemVersion) int {
         return COMP_APPLES_AND_ORANGES
     }
 
+    // which set of rules do we need to use?
     if lhs.Stability == "" {
+        // one side is stable - we require the other side to be too
         return lhs.compareStable(rhs)
-    } else {
-        return lhs.compareUnstable(rhs)
     }
+
+    // one side is unstable - we require the other side to be too
+    return lhs.compareUnstable(rhs)
 }
 
 func (lhs *SemVersion) compareStable(rhs *SemVersion) int {

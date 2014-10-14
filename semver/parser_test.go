@@ -569,3 +569,96 @@ func TestCanParseTildeOperatorWithMajorMinorPatchlevelUnstableRelease(t *testing
 // Tests for Parse() with @
 //
 // ------------------------------------------------------------------------
+
+// ========================================================================
+//
+// Tests for Parse() with !=
+//
+// ------------------------------------------------------------------------
+
+func TestCanParseNotEqualsOperatorWithMajorMinor(t *testing.T) {
+    // what result do we expect?
+    expected := VersionExpression{
+        Operator: OP_NOT_EQUALS,
+        Version: SemVersion{
+            Major:      1,
+            Minor:      3,
+            PatchLevel: 0,
+            Stability:  "",
+            Release:    0,
+        },
+    }
+
+    // perform the test
+    actual, err := ParseExpression("!=1.3")
+
+    // was an error returned?
+    if err != nil {
+        t.Error(err)
+        return
+    }
+
+    // did we get back what we expected?
+    if actual != expected {
+        t.Errorf("Expected %d, received %d", expected, actual)
+        return
+    }
+}
+
+func TestCanParseNotEqualsOperatorWithMajorMinorPatchlevel(t *testing.T) {
+    // what result do we expect?
+    expected := VersionExpression{
+        Operator: OP_NOT_EQUALS,
+        Version: SemVersion{
+            Major:      1,
+            Minor:      3,
+            PatchLevel: 6,
+            Stability:  "",
+            Release:    0,
+        },
+    }
+
+    // perform the test
+    actual, err := ParseExpression("!=1.3.6")
+
+    // was an error returned?
+    if err != nil {
+        t.Error(err)
+        return
+    }
+
+    // did we get back what we expected?
+    if actual != expected {
+        t.Errorf("Expected %d, received %d", expected, actual)
+        return
+    }
+}
+
+func TestCanParseNotEqualsOperatorWithMajorMinorPatchlevelUnstableRelease(t *testing.T) {
+    // what result do we expect?
+    expected := VersionExpression{
+        Operator: OP_NOT_EQUALS,
+        Version: SemVersion{
+            Major:      1,
+            Minor:      3,
+            PatchLevel: 6,
+            Stability:  "alpha",
+            Release:    1,
+        },
+    }
+
+    // perform the test
+    actual, err := ParseExpression("!=1.3.6-alpha-1")
+
+    // was an error returned?
+    if err != nil {
+        t.Error(err)
+        return
+    }
+
+    // did we get back what we expected?
+    if actual != expected {
+        t.Errorf("Expected %d, received %d", expected, actual)
+        return
+    }
+}
