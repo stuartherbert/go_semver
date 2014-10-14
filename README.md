@@ -3,7 +3,8 @@
 A simple library to compare two semantic version numbers against each other. Written for Go.
 
 [![GoDoc](https://godoc.org/github.com/stuartherbert/go_semver/server?status.svg)](http://godoc.org/github.com/stuartherbert/go_semver/semver)
-[![Build Status](https://travis-ci.org/stuartherbert/go_semver.svg?branch=master)](https://travis-ci.org/stuartherbert/go_semver)
+Latest Release (master branch): [![Build Status](https://travis-ci.org/stuartherbert/go_semver.svg?branch=master)](https://travis-ci.org/stuartherbert/go_semver)
+Upcoming Release (develop branch): [![Build Status](https://travis-ci.org/stuartherbert/go_semver.svg?branch=develop)](https://travis-ci.org/stuartherbert/go_semver)
 
 ## Semantic Version Strings
 
