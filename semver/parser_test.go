@@ -200,7 +200,7 @@ func TestStabilityLevelCanIncludeAnUnderscore(t *testing.T) {
 
 func TestCanParseEqualsOperatorWithMajorMinor(t *testing.T) {
     // what result do we expect?
-    expected := Comparison{
+    expected := VersionExpression{
         Operator: OP_EQUALS,
         Version: SemVersion{
             Major:      1,
@@ -212,7 +212,7 @@ func TestCanParseEqualsOperatorWithMajorMinor(t *testing.T) {
     }
 
     // perform the test
-    actual, err := Parse("=1.3")
+    actual, err := ParseExpression("=1.3")
 
     // was an error returned?
     if err != nil {
@@ -229,7 +229,7 @@ func TestCanParseEqualsOperatorWithMajorMinor(t *testing.T) {
 
 func TestCanParseEqualsOperatorWithMajorMinorPatchlevel(t *testing.T) {
     // what result do we expect?
-    expected := Comparison{
+    expected := VersionExpression{
         Operator: OP_EQUALS,
         Version: SemVersion{
             Major:      1,
@@ -241,7 +241,7 @@ func TestCanParseEqualsOperatorWithMajorMinorPatchlevel(t *testing.T) {
     }
 
     // perform the test
-    actual, err := Parse("=1.3.6")
+    actual, err := ParseExpression("=1.3.6")
 
     // was an error returned?
     if err != nil {
@@ -258,7 +258,7 @@ func TestCanParseEqualsOperatorWithMajorMinorPatchlevel(t *testing.T) {
 
 func TestCanParseEqualsOperatorWithMajorMinorPatchlevelUnstableRelease(t *testing.T) {
     // what result do we expect?
-    expected := Comparison{
+    expected := VersionExpression{
         Operator: OP_EQUALS,
         Version: SemVersion{
             Major:      1,
@@ -270,7 +270,7 @@ func TestCanParseEqualsOperatorWithMajorMinorPatchlevelUnstableRelease(t *testin
     }
 
     // perform the test
-    actual, err := Parse("=1.3.6-alpha-1")
+    actual, err := ParseExpression("=1.3.6-alpha-1")
 
     // was an error returned?
     if err != nil {
@@ -293,7 +293,7 @@ func TestCanParseEqualsOperatorWithMajorMinorPatchlevelUnstableRelease(t *testin
 
 func TestCanParseGreaterThanOrEqualToOperatorWithMajorMinor(t *testing.T) {
     // what result do we expect?
-    expected := Comparison{
+    expected := VersionExpression{
         Operator: OP_GT_EQUALS,
         Version: SemVersion{
             Major:      1,
@@ -305,7 +305,7 @@ func TestCanParseGreaterThanOrEqualToOperatorWithMajorMinor(t *testing.T) {
     }
 
     // perform the test
-    actual, err := Parse(">=1.3")
+    actual, err := ParseExpression(">=1.3")
 
     // was an error returned?
     if err != nil {
@@ -322,7 +322,7 @@ func TestCanParseGreaterThanOrEqualToOperatorWithMajorMinor(t *testing.T) {
 
 func TestCanGreaterThanOrEqualToOperatorWithMajorMinorPatchlevel(t *testing.T) {
     // what result do we expect?
-    expected := Comparison{
+    expected := VersionExpression{
         Operator: OP_GT_EQUALS,
         Version: SemVersion{
             Major:      1,
@@ -334,7 +334,7 @@ func TestCanGreaterThanOrEqualToOperatorWithMajorMinorPatchlevel(t *testing.T) {
     }
 
     // perform the test
-    actual, err := Parse(">=1.3.6")
+    actual, err := ParseExpression(">=1.3.6")
 
     // was an error returned?
     if err != nil {
@@ -351,7 +351,7 @@ func TestCanGreaterThanOrEqualToOperatorWithMajorMinorPatchlevel(t *testing.T) {
 
 func TestCanParseGreaterThanOrEqualToOperatorWithMajorMinorPatchlevelUnstableRelease(t *testing.T) {
     // what result do we expect?
-    expected := Comparison{
+    expected := VersionExpression{
         Operator: OP_GT_EQUALS,
         Version: SemVersion{
             Major:      1,
@@ -363,7 +363,7 @@ func TestCanParseGreaterThanOrEqualToOperatorWithMajorMinorPatchlevelUnstableRel
     }
 
     // perform the test
-    actual, err := Parse(">=1.3.6-alpha-1")
+    actual, err := ParseExpression(">=1.3.6-alpha-1")
 
     // was an error returned?
     if err != nil {
@@ -386,7 +386,7 @@ func TestCanParseGreaterThanOrEqualToOperatorWithMajorMinorPatchlevelUnstableRel
 
 func TestCanParseLessThanOrEqualToOperatorWithMajorMinor(t *testing.T) {
     // what result do we expect?
-    expected := Comparison{
+    expected := VersionExpression{
         Operator: OP_LT_EQUALS,
         Version: SemVersion{
             Major:      1,
@@ -398,7 +398,7 @@ func TestCanParseLessThanOrEqualToOperatorWithMajorMinor(t *testing.T) {
     }
 
     // perform the test
-    actual, err := Parse("<=1.3")
+    actual, err := ParseExpression("<=1.3")
 
     // was an error returned?
     if err != nil {
@@ -415,7 +415,7 @@ func TestCanParseLessThanOrEqualToOperatorWithMajorMinor(t *testing.T) {
 
 func TestCanParseLessThanOrEqualToOperatorWithMajorMinorPatchlevel(t *testing.T) {
     // what result do we expect?
-    expected := Comparison{
+    expected := VersionExpression{
         Operator: OP_LT_EQUALS,
         Version: SemVersion{
             Major:      1,
@@ -427,7 +427,7 @@ func TestCanParseLessThanOrEqualToOperatorWithMajorMinorPatchlevel(t *testing.T)
     }
 
     // perform the test
-    actual, err := Parse("<=1.3.6")
+    actual, err := ParseExpression("<=1.3.6")
 
     // was an error returned?
     if err != nil {
@@ -444,7 +444,7 @@ func TestCanParseLessThanOrEqualToOperatorWithMajorMinorPatchlevel(t *testing.T)
 
 func TestCanParseLessThanOrEqualToOperatorWithMajorMinorPatchlevelUnstableRelease(t *testing.T) {
     // what result do we expect?
-    expected := Comparison{
+    expected := VersionExpression{
         Operator: OP_LT_EQUALS,
         Version: SemVersion{
             Major:      1,
@@ -456,7 +456,7 @@ func TestCanParseLessThanOrEqualToOperatorWithMajorMinorPatchlevelUnstableReleas
     }
 
     // perform the test
-    actual, err := Parse("<=1.3.6-alpha-1")
+    actual, err := ParseExpression("<=1.3.6-alpha-1")
 
     // was an error returned?
     if err != nil {
@@ -479,7 +479,7 @@ func TestCanParseLessThanOrEqualToOperatorWithMajorMinorPatchlevelUnstableReleas
 
 func TestCanParseTildeOperatorWithMajorMinor(t *testing.T) {
     // what result do we expect?
-    expected := Comparison{
+    expected := VersionExpression{
         Operator: OP_TILDE,
         Version: SemVersion{
             Major:      1,
@@ -491,7 +491,7 @@ func TestCanParseTildeOperatorWithMajorMinor(t *testing.T) {
     }
 
     // perform the test
-    actual, err := Parse("~1.3")
+    actual, err := ParseExpression("~1.3")
 
     // was an error returned?
     if err != nil {
@@ -508,7 +508,7 @@ func TestCanParseTildeOperatorWithMajorMinor(t *testing.T) {
 
 func TestCanParseTildeOperatorWithMajorMinorPatchlevel(t *testing.T) {
     // what result do we expect?
-    expected := Comparison{
+    expected := VersionExpression{
         Operator: OP_TILDE,
         Version: SemVersion{
             Major:      1,
@@ -520,7 +520,7 @@ func TestCanParseTildeOperatorWithMajorMinorPatchlevel(t *testing.T) {
     }
 
     // perform the test
-    actual, err := Parse("~1.3.6")
+    actual, err := ParseExpression("~1.3.6")
 
     // was an error returned?
     if err != nil {
@@ -537,7 +537,7 @@ func TestCanParseTildeOperatorWithMajorMinorPatchlevel(t *testing.T) {
 
 func TestCanParseTildeOperatorWithMajorMinorPatchlevelUnstableRelease(t *testing.T) {
     // what result do we expect?
-    expected := Comparison{
+    expected := VersionExpression{
         Operator: OP_TILDE,
         Version: SemVersion{
             Major:      1,
@@ -549,7 +549,7 @@ func TestCanParseTildeOperatorWithMajorMinorPatchlevelUnstableRelease(t *testing
     }
 
     // perform the test
-    actual, err := Parse("~1.3.6-alpha-1")
+    actual, err := ParseExpression("~1.3.6-alpha-1")
 
     // was an error returned?
     if err != nil {

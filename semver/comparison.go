@@ -5,6 +5,7 @@ import (
     "strings"
 )
 
+// errors returned when a version does not match an expression
 var (
     ErrDifferentMajorVersions   = fmt.Errorf("Major version numbers are different")
     ErrDifferentMinorVersions   = fmt.Errorf("Minor version numbers are different")
@@ -27,32 +28,51 @@ var (
     ErrNewerStableVersion       = fmt.Errorf("Newer stable version")
 )
 
-func (lhs *Comparison) Matches(raw string) (bool, error) {
+// check to see if 'version' matches the expression that we have already
+// parsed.
+//
+// this is a convenience method around 'MatchesVersion', to avoid parsing
+// the 'version' string yourself first
+//
+// returns 'true' if the version matches the expression in 'lhs'
+// returns 'false' plus one of the Err* values if the version does not
+// match
+func (lhs *VersionExpression) Matches(version string) (bool, error) {
     // we need to turn our raw string into a comparison struct first
-    rhs, err := ParseVersion(raw)
+    rhs, err := ParseVersion(version)
     if err != nil {
         return false, err
     }
 
+    return lhs.MatchesVersion(&rhs)
+}
+
+// check to see if 'version' matches the expression that we have already
+// parsed.
+//
+// returns 'true' if the version matches the expression in 'lhs'
+// returns 'false' plus one of the Err* values if the version does not
+// match
+func (lhs *VersionExpression) MatchesVersion(rhs *SemVersion) (bool, error) {
     switch lhs.Operator {
     case OP_EQUALS:
-        return lhs.MatchesEquals(&rhs)
+        return lhs.matchesEquals(rhs)
 
     case OP_GT_EQUALS:
-        return lhs.MatchesGreaterThanOrEqualTo(&rhs)
+        return lhs.matchesGreaterThanOrEqualTo(rhs)
 
     case OP_LT_EQUALS:
-        return lhs.MatchesLessThanOrEqualTo(&rhs)
+        return lhs.matchesLessThanOrEqualTo(rhs)
 
     case OP_TILDE:
-        return lhs.MatchesCompatibleWith(&rhs)
+        return lhs.matchesCompatibleWith(rhs)
     }
 
     // if we get here, then we do not recognise the operator
     return false, ErrUnknownOperator
 }
 
-func (lhs *Comparison) MatchesEquals(rhs *SemVersion) (bool, error) {
+func (lhs *VersionExpression) matchesEquals(rhs *SemVersion) (bool, error) {
     // the left hand side needs to be the same as the right hand side
     //
     // this 'if' comparison might look long-winded, but it has the
@@ -77,16 +97,16 @@ func (lhs *Comparison) MatchesEquals(rhs *SemVersion) (bool, error) {
     return true, nil
 }
 
-func (lhs *Comparison) MatchesGreaterThanOrEqualTo(rhs *SemVersion) (bool, error) {
+func (lhs *VersionExpression) matchesGreaterThanOrEqualTo(rhs *SemVersion) (bool, error) {
     // are we checking a stable or an unstable release?
     if lhs.Version.Stability == "" {
-        return lhs.MatchesGreaterThanOrEqualToStable(rhs)
+        return lhs.matchesGreaterThanOrEqualToStable(rhs)
     } else {
-        return lhs.MatchesGreaterThanOrEqualToUnstable(rhs)
+        return lhs.matchesGreaterThanOrEqualToUnstable(rhs)
     }
 }
 
-func (lhs *Comparison) MatchesGreaterThanOrEqualToStable(rhs *SemVersion) (bool, error) {
+func (lhs *VersionExpression) matchesGreaterThanOrEqualToStable(rhs *SemVersion) (bool, error) {
     if lhs.Version.Stability != rhs.Stability {
         return false, ErrDifferentStabilityLevels
     }
@@ -123,7 +143,7 @@ func (lhs *Comparison) MatchesGreaterThanOrEqualToStable(rhs *SemVersion) (bool,
     return true, nil
 }
 
-func (lhs *Comparison) MatchesGreaterThanOrEqualToUnstable(rhs *SemVersion) (bool, error) {
+func (lhs *VersionExpression) matchesGreaterThanOrEqualToUnstable(rhs *SemVersion) (bool, error) {
     if lhs.Version.Stability != rhs.Stability {
         return false, ErrDifferentStabilityLevels
     }
@@ -152,16 +172,16 @@ func (lhs *Comparison) MatchesGreaterThanOrEqualToUnstable(rhs *SemVersion) (boo
     return true, nil
 }
 
-func (lhs *Comparison) MatchesLessThanOrEqualTo(rhs *SemVersion) (bool, error) {
+func (lhs *VersionExpression) matchesLessThanOrEqualTo(rhs *SemVersion) (bool, error) {
     // are we checking a stable or an unstable release?
     if lhs.Version.Stability == "" {
-        return lhs.MatchesLessThanOrEqualToStable(rhs)
+        return lhs.matchesLessThanOrEqualToStable(rhs)
     } else {
-        return lhs.MatchesLessThanOrEqualToUnstable(rhs)
+        return lhs.matchesLessThanOrEqualToUnstable(rhs)
     }
 }
 
-func (lhs *Comparison) MatchesLessThanOrEqualToStable(rhs *SemVersion) (bool, error) {
+func (lhs *VersionExpression) matchesLessThanOrEqualToStable(rhs *SemVersion) (bool, error) {
     if lhs.Version.Stability != rhs.Stability {
         return false, ErrDifferentStabilityLevels
     }
@@ -198,7 +218,7 @@ func (lhs *Comparison) MatchesLessThanOrEqualToStable(rhs *SemVersion) (bool, er
     return true, nil
 }
 
-func (lhs *Comparison) MatchesLessThanOrEqualToUnstable(rhs *SemVersion) (bool, error) {
+func (lhs *VersionExpression) matchesLessThanOrEqualToUnstable(rhs *SemVersion) (bool, error) {
     if lhs.Version.Stability != rhs.Stability {
         return false, ErrDifferentStabilityLevels
     }
@@ -227,15 +247,15 @@ func (lhs *Comparison) MatchesLessThanOrEqualToUnstable(rhs *SemVersion) (bool, 
     return true, nil
 }
 
-func (lhs *Comparison) MatchesCompatibleWith(rhs *SemVersion) (bool, error) {
+func (lhs *VersionExpression) matchesCompatibleWith(rhs *SemVersion) (bool, error) {
     if lhs.Version.Stability == "" {
-        return lhs.MatchesCompatibleWithStable(rhs)
+        return lhs.matchesCompatibleWithStable(rhs)
     } else {
-        return lhs.MatchesCompatibleWithUnstable(rhs)
+        return lhs.matchesCompatibleWithUnstable(rhs)
     }
 }
 
-func (lhs *Comparison) MatchesCompatibleWithStable(rhs *SemVersion) (bool, error) {
+func (lhs *VersionExpression) matchesCompatibleWithStable(rhs *SemVersion) (bool, error) {
     if lhs.Version.Stability != rhs.Stability {
         return false, ErrDifferentStabilityLevels
     }
@@ -261,7 +281,7 @@ func (lhs *Comparison) MatchesCompatibleWithStable(rhs *SemVersion) (bool, error
     return true, nil
 }
 
-func (lhs *Comparison) MatchesCompatibleWithUnstable(rhs *SemVersion) (bool, error) {
+func (lhs *VersionExpression) matchesCompatibleWithUnstable(rhs *SemVersion) (bool, error) {
     if lhs.Version.Stability != rhs.Stability {
         return false, ErrDifferentStabilityLevels
     }
