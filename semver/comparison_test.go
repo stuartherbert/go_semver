@@ -41,7 +41,7 @@ func TestCanMatchUsingEquals(t *testing.T) {
 
     for _, matchSet := range toMatch {
         // perform the test
-        lhs, err := Parse(matchSet[0])
+        lhs, err := ParseExpression(matchSet[0])
         if err != nil {
             t.Error(err)
             return
@@ -90,7 +90,7 @@ func TestCannotMatchUsingEquals(t *testing.T) {
 
     for _, matchSet := range toMatch {
         // perform the test
-        lhs, err := Parse(matchSet.lhs)
+        lhs, err := ParseExpression(matchSet.lhs)
         if err != nil {
             t.Error(err)
             return
@@ -159,7 +159,7 @@ func TestCanMatchUsingGreaterThanOrEquals(t *testing.T) {
 
     for _, matchSet := range toMatch {
         // perform the test
-        lhs, err := Parse(matchSet[0])
+        lhs, err := ParseExpression(matchSet[0])
         if err != nil {
             t.Error(err)
             return
@@ -208,7 +208,7 @@ func TestCannotMatchUsingGreaterThanOrEquals(t *testing.T) {
 
     for _, matchSet := range toMatch {
         // perform the test
-        lhs, err := Parse(matchSet.lhs)
+        lhs, err := ParseExpression(matchSet.lhs)
         if err != nil {
             t.Error(err)
             return
@@ -277,7 +277,7 @@ func TestCanMatchUsingLessThanOrEquals(t *testing.T) {
 
     for _, matchSet := range toMatch {
         // perform the test
-        lhs, err := Parse(matchSet[0])
+        lhs, err := ParseExpression(matchSet[0])
         if err != nil {
             t.Error(err)
             return
@@ -326,7 +326,7 @@ func TestCannotMatchUsingLessThanOrEquals(t *testing.T) {
 
     for _, matchSet := range toMatch {
         // perform the test
-        lhs, err := Parse(matchSet.lhs)
+        lhs, err := ParseExpression(matchSet.lhs)
         if err != nil {
             t.Error(err)
             return
@@ -391,7 +391,7 @@ func TestCanMatchUsingTilde(t *testing.T) {
 
     for _, matchSet := range toMatch {
         // perform the test
-        lhs, err := Parse(matchSet[0])
+        lhs, err := ParseExpression(matchSet[0])
         if err != nil {
             t.Error(err)
             return
@@ -441,7 +441,7 @@ func TestCannotMatchUsingTilde(t *testing.T) {
 
     for _, matchSet := range toMatch {
         // perform the test
-        lhs, err := Parse(matchSet.lhs)
+        lhs, err := ParseExpression(matchSet.lhs)
         if err != nil {
             t.Error(err)
             return

@@ -7,21 +7,47 @@ import (
     "strings"
 )
 
-type Comparison struct {
+// holds the result of a parsed version expression
+//
+// create one by calling:
+//
+//     exp = semver.ParseExpression("<operator><version>")
+type VersionExpression struct {
     Operator int        // which operator are we using?
     Version  SemVersion // which version is specified?
 }
 
+// value of VersionExpression.Operator when the expression requires an
+// exact match
 const OP_EQUALS = 0
+
+// value of VersionExpression.Operator when the expression requires a
+// version that is greater than or equal to
 const OP_GT_EQUALS = 1
+
+// value of VersionExpression.Operator when the expression requires a
+// version that is less than or equal to
 const OP_LT_EQUALS = 2
+
+// value of VersionExpression.Operator when the expression requires a
+// version that is both compatible (ie same major version) AND greater
+// than or equal to
 const OP_TILDE = 3
+
+// value of VersionExpression.Operator when the expression requires a
+// non-version string of some kind (such as a commit_id or a branch name)
+//
+// currently unsupported
 const OP_AT = 4
 
-var OpList = []string{"=", ">=", "<=", "~", "@"}
+// a list of supported operators
+var opList = []string{"=", ">=", "<=", "~", "@"}
 
+// holds our compiled regexes, so that we don't have to compile them
+// more than once
 var versionRegexes [4]*regexp.Regexp
 
+// compiles all of the regexes that we need to parse version strings
 func init() {
     // here are the regex's that will match version strings
     var regexes [4]string
@@ -36,25 +62,30 @@ func init() {
     }
 }
 
-func Parse(raw string) (Comparison, error) {
+// takes an expression of the form:
+//
+//     <OPERATOR><version-string>
+//
+// and turns it into a VersionExpression struct
+func ParseExpression(exp string) (VersionExpression, error) {
     // do we have an operator?
-    op, offset, err := startsWithOperator(raw)
+    op, offset, err := startsWithOperator(exp)
     if err != nil {
-        return Comparison{}, err
+        return VersionExpression{}, err
     }
 
     // do we have a semantically-correct version number too?
-    version, err := parseVersionWithOffset(raw, offset)
+    version, err := parseVersionWithOffset(exp, offset)
     if err != nil {
-        return Comparison{}, err
+        return VersionExpression{}, err
     }
 
-    parsed := Comparison{op, version}
+    parsed := VersionExpression{op, version}
     return parsed, nil
 }
 
 func startsWithOperator(raw string) (int, int, error) {
-    for i, opToEval := range OpList {
+    for i, opToEval := range opList {
         if strings.HasPrefix(raw, opToEval) {
             return i, len(opToEval), nil
         }
@@ -64,8 +95,16 @@ func startsWithOperator(raw string) (int, int, error) {
     return -1, -1, fmt.Errorf("unrecognised operator")
 }
 
-func ParseVersion(raw string) (SemVersion, error) {
-    return parseVersionWithOffset(raw, 0)
+// takes any of these strings:
+//
+//     X.Y
+//     X.Y.Z
+//     X.Y-<stability>-R
+//     X.Y.Z-<stability>-R
+//
+// and turns it into a SemVersion struct
+func ParseVersion(version string) (SemVersion, error) {
+    return parseVersionWithOffset(version, 0)
 }
 
 func parseVersionWithOffset(raw string, offset int) (SemVersion, error) {
