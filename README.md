@@ -2,6 +2,8 @@
 
 A simple library to compare two semantic version numbers against each other. Written for Go.
 
+[![Semver](https://godoc.org/github.com/stuartherbert/go_semver/server?status.svg)](http://godoc.org/github.com/stuartherbert/go_semver/semver)
+
 ## Semantic Version Strings
 
 A semantic version string is of the form:
