@@ -40,7 +40,10 @@ const COMP_APPLES_AND_ORANGES = 3
 // parsed into a SemVersion struct
 const COMP_PARSE_ERROR = -1
 
-// compare two version strings, returning a COMP_* constant to indicate
+// CompareVersions compares two version strings and tells you whether
+// one is larger, smaller or the same as the other.
+//
+// Compare two version strings, returning a COMP_* constant to indicate
 // how the right hand side (rhs) compares to the left hand side (lhs)
 //
 // e.g.
@@ -64,6 +67,9 @@ func CompareVersions(lhs string, rhs string) (int, error) {
     return lhsVersion.Compare(&rhsVersion), nil
 }
 
+// CompareString parses and compares a version string against a SemVersion
+// struct.
+//
 // convenience wrapper around SemVersion.Compare when you don't want to
 // parse a version string yourself first
 func (lhs *SemVersion) CompareString(version string) (int, error) {
@@ -75,6 +81,8 @@ func (lhs *SemVersion) CompareString(version string) (int, error) {
     return lhs.Compare(&rhs), nil
 }
 
+// Compare compares two SemVersion structs against each other.
+//
 // compares two versions, and returns a COMP_* constant to tell you whether
 // the right hand side is larger, smaller, or the same as the left hand
 // side
